@@ -28,6 +28,15 @@ for c in ascii_uppercase:
     if not os.path.exists(label_test_path):
         os.mkdir(label_test_path)
 
+class Rect_ROI:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+rect_roi = Rect_ROI(100, 100, 200, 200)
+
 cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 if not cam.isOpened():
@@ -36,7 +45,11 @@ if not cam.isOpened():
 while True:
     ret, frame = cam.read()
 
-    cv2.imshow("", frame)
+    # cv2.imshow("", frame)
+
+    roi = frame[rect_roi.y : rect_roi.y + rect_roi.h, rect_roi.x : rect_roi.x + rect_roi.w]
+
+    cv2.imshow('', roi)
 
     c = cv2.waitKey(1)
     if c == 27:
