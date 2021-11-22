@@ -70,7 +70,7 @@ while True:
 
         diff_gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 
-        _, thr = cv2.threshold(diff_gray, 50, 255, cv2.THRESH_BINARY)
+        _, thr = cv2.threshold(diff_gray, 20, 255, cv2.THRESH_BINARY)
         cv2.imshow('Difference Thresholded', thr)
 
     c = cv2.waitKey(1)
