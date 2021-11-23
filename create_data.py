@@ -1,6 +1,6 @@
 import os
-from string import ascii_uppercase
 import cv2
+from time import time
 
 resc_dir = 'resources'
 
@@ -25,15 +25,15 @@ if not os.path.exists(train_path):
 if not os.path.exists(test_path):
     os.mkdir(test_path)
 
-for c in ascii_uppercase:
-    label_train_path = f'{train_path}/{c}'
-    label_test_path = f'{test_path}/{c}'
+# for c in ascii_uppercase:
+#     label_train_path = f'{train_path}/{c}'
+#     label_test_path = f'{test_path}/{c}'
 
-    if not os.path.exists(label_train_path):
-        os.mkdir(label_train_path)
+#     if not os.path.exists(label_train_path):
+#         os.mkdir(label_train_path)
     
-    if not os.path.exists(label_test_path):
-        os.mkdir(label_test_path)
+#     if not os.path.exists(label_test_path):
+#         os.mkdir(label_test_path)
 
 class Rect_ROI:
     def __init__(self, x, y, w, h):
@@ -80,9 +80,22 @@ while True:
     if c == ord('b'):                       # create background image
         cv2.imwrite(bg_path, roi)
     if c >= ord('0') and c <= ord('9'):     # capture and save data image
-        char = chr(c)
-        print(char)
+        digit = chr(c)
 
+        train_label_path = f'{train_path}/{digit}'
+        test_label_path = f'{test_path}/{digit}'
+
+        if not os.path.exists(train_label_path):
+            os.mkdir(train_label_path)
+            print(f'Created label path {train_label_path}')
+
+        if not os.path.exists(test_label_path):
+            os.mkdir(test_label_path)
+            print(f'Created label path {test_label_path}')
+        
+        # for _ in range(10):
+        t = round(time() * 1000)
+        cv2.imwrite(f'{train_label_path}/{t}.png', thr)
 
 cam.release()
 cv2.destroyAllWindows()
