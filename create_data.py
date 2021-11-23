@@ -75,12 +75,14 @@ while True:
 
     c = cv2.waitKey(1)
 
-    if c == 27:     # exit
+    if c == 27:                             # exit
         break
-    if c == 98:     # create background image
+    if c == ord('b'):                       # create background image
         cv2.imwrite(bg_path, roi)
-    if c == 99:     # capture and save data image
-        print('Window captured!')
+    if c >= ord('0') and c <= ord('9'):     # capture and save data image
+        char = chr(c)
+        print(char)
+
 
 cam.release()
 cv2.destroyAllWindows()
