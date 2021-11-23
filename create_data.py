@@ -96,6 +96,7 @@ while True:
         # for _ in range(10):
         t = round(time() * 1000)
         cv2.imwrite(f'{train_label_path}/{t}.png', thr)
+        print(f'New image for {digit} saved as {train_label_path}/{t}.png')
 
 cam.release()
 cv2.destroyAllWindows()
