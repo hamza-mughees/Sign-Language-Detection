@@ -13,6 +13,8 @@ model_path = f'./models/{model_id}.h5py'
 
 model = load_model(model_path)
 
+bg_set = False
+
 class Rect_ROI:
     def __init__(self, x, y, w, h):
         self.x1 = x
@@ -41,7 +43,7 @@ while True:
 
     # cv2.imshow('Live', roi)
 
-    if os.path.exists(bg_path):
+    if os.path.exists(bg_path) and bg_set:
         bg = cv2.imread(bg_path)
 
         diff = cv2.absdiff(roi, bg)
@@ -54,7 +56,8 @@ while True:
         x = reshape(convert_to_tensor(thr), [1, 200, 200, 1])
         y = np.argmax(model.predict(x))
 
-        print(y)
+        if np.sum(x) > 1000000:
+            print(y)
 
     c = cv2.waitKey(1)
 
@@ -62,3 +65,4 @@ while True:
         break
     if c == ord('b'):                       # create background image
         cv2.imwrite(bg_path, roi)
+        bg_set = True
