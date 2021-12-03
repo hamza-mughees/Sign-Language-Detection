@@ -15,6 +15,8 @@ model = load_model(model_path)
 
 bg_set = False
 
+font = cv2.FONT_HERSHEY_SIMPLEX
+
 class Rect_ROI:
     def __init__(self, x, y, w, h):
         self.x1 = x
@@ -39,8 +41,6 @@ while True:
     roi = frame[rect_roi.y1 : rect_roi.y2, rect_roi.x1 : rect_roi.x2]
     frame = cv2.rectangle(frame, (rect_roi.x1, rect_roi.y1), (rect_roi.x2, rect_roi.y2), (0, 255, 0), 2)
 
-    cv2.imshow('Live', frame)
-
     # cv2.imshow('Live', roi)
 
     if os.path.exists(bg_path) and bg_set:
@@ -57,8 +57,10 @@ while True:
         y = np.argmax(model.predict(x))
 
         if np.sum(x) > 1000000:
-            print(y)
+            cv2.putText(frame, str(y), (rect_roi.x1 + 10, rect_roi.y1 + 30), font, 1, (0, 255, 0), 1, cv2.LINE_4)
 
+    cv2.imshow('Live', frame)
+    
     c = cv2.waitKey(1)
 
     if c == 27:                             # exit
