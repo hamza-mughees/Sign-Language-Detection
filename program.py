@@ -35,6 +35,9 @@ while True:
     ret, frame = cam.read()
 
     roi = frame[rect_roi.y1 : rect_roi.y2, rect_roi.x1 : rect_roi.x2]
+    frame = cv2.rectangle(frame, (rect_roi.x1, rect_roi.y1), (rect_roi.x2, rect_roi.y2), (0, 255, 0), 2)
+
+    cv2.imshow('Live', frame)
 
     # cv2.imshow('Live', roi)
 
@@ -42,18 +45,15 @@ while True:
         bg = cv2.imread(bg_path)
 
         diff = cv2.absdiff(roi, bg)
-        # cv2.imshow('Difference', diff)
 
         diff_gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 
         _, thr = cv2.threshold(diff_gray, 20, 255, cv2.THRESH_BINARY)
-        cv2.imshow('Difference Thresholded', thr)
+        # cv2.imshow('Difference Thresholded', thr)
 
-        # x = np.array(thr)
+        x = reshape(convert_to_tensor(thr), [1, 200, 200, 1])
+        y = np.argmax(model.predict(x))
 
-        x = convert_to_tensor(thr)
-        x = reshape(x, [1, 200, 200, 1])
-        y = model.predict(x)
         print(y)
 
     c = cv2.waitKey(1)
