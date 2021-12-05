@@ -22,6 +22,8 @@ y = 100
 
 dxy = 5
 
+tb_height = 100
+
 class Rect_ROI:
     def __init__(self, x: int, y: int, w: int, h: int):
         self.x1 = x
@@ -43,12 +45,23 @@ if not cam.isOpened():
 while True:
     ret, frame = cam.read()
 
+    width = frame.shape[1]
+    height = frame.shape[0]
+
     roi = frame[rect_roi.y1 : rect_roi.y2, rect_roi.x1 : rect_roi.x2]
     frame = cv2.rectangle(frame, (rect_roi.x1, rect_roi.y1), (rect_roi.x2, rect_roi.y2), (0, 255, 0), 2)
+
+    frame = cv2.rectangle(frame, (0, height - tb_height), (width, height), (0, 0, 0), -1)
 
     # cv2.imshow('Live', roi)
 
     if bg_set:
+        cv2.putText(
+            frame, 
+            'Bring ASL digit hand-symbol into ROI for detection.', 
+            (tb_height // 2, height - (tb_height // 2)), 
+            font, 0.35, (255, 255, 255), 1, cv2.LINE_4)
+
         bg = cv2.imread(bg_path)
 
         diff = cv2.absdiff(roi, bg)
@@ -64,10 +77,18 @@ while True:
         if np.sum(x) > 1000000:
             cv2.putText(frame, str(y), (rect_roi.x1 + 10, rect_roi.y1 + 30), font, 1, (0, 255, 0), 1, cv2.LINE_4)
     else:
-        pass
-        # TODO: Add instructions for the user to use w,a,s,d and b
+        cv2.putText(
+            frame, 
+            'Use WASD to move the ROI to a single-coloured background', 
+            (tb_height // 2, height - (tb_height // 2)), 
+            font, 0.35, (255, 255, 255), 1, cv2.LINE_4)
+        cv2.putText(
+            frame, 
+            'which constrasts with the hand. Press b to select.', 
+            (tb_height // 2, height - (tb_height // 2) + 12), 
+            font, 0.35, (255, 255, 255), 1, cv2.LINE_4)
 
-    cv2.imshow('Live', frame)
+    cv2.imshow('ASL Digit Detector', frame)
     
     c = cv2.waitKey(1)
 
@@ -82,7 +103,7 @@ while True:
 
     if not bg_set and c == ord('s'):
         y += dxy
-        if y > frame.shape[0] - 200:
+        if y > height - tb_height - 200:
             y -= dxy
         rect_roi = Rect_ROI(x, y, 200, 200)
 
@@ -94,7 +115,7 @@ while True:
 
     if not bg_set and c == ord('d'):
         x += dxy
-        if x > frame.shape[1] - 200:
+        if x > width - 200:
             x -= dxy
         rect_roi = Rect_ROI(x, y, 200, 200)
 
