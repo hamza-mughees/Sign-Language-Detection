@@ -17,8 +17,13 @@ bg_set = False
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+x = 100
+y = 100
+
+dxy = 5
+
 class Rect_ROI:
-    def __init__(self, x, y, w, h):
+    def __init__(self, x: int, y: int, w: int, h: int):
         self.x1 = x
         self.y1 = y
 
@@ -28,7 +33,7 @@ class Rect_ROI:
         self.x2 = x + w
         self.y2 = y + h
 
-rect_roi = Rect_ROI(100, 100, 200, 200)
+rect_roi = Rect_ROI(x, y, 200, 200)
 
 cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
@@ -43,7 +48,7 @@ while True:
 
     # cv2.imshow('Live', roi)
 
-    if os.path.exists(bg_path) and bg_set:
+    if bg_set:
         bg = cv2.imread(bg_path)
 
         diff = cv2.absdiff(roi, bg)
@@ -58,13 +63,40 @@ while True:
 
         if np.sum(x) > 1000000:
             cv2.putText(frame, str(y), (rect_roi.x1 + 10, rect_roi.y1 + 30), font, 1, (0, 255, 0), 1, cv2.LINE_4)
+    else:
+        pass
 
     cv2.imshow('Live', frame)
     
     c = cv2.waitKey(1)
 
-    if c == 27:                             # exit
+    if c == 27:                                 # exit
         break
-    if c == ord('b'):                       # create background image
+
+    if not bg_set and c == ord('w'):
+        y -= dxy
+        if y < 0:
+            y += dxy
+        rect_roi = Rect_ROI(x, y, 200, 200)
+
+    if not bg_set and c == ord('s'):
+        y += dxy
+        if y > frame.shape[0] - 200:
+            y -= dxy
+        rect_roi = Rect_ROI(x, y, 200, 200)
+
+    if not bg_set and c == ord('a'):
+        x -= dxy
+        if x < 0:
+            x += dxy
+        rect_roi = Rect_ROI(x, y, 200, 200)
+
+    if not bg_set and c == ord('d'):
+        x += dxy
+        if x > frame.shape[1] - 200:
+            x -= dxy
+        rect_roi = Rect_ROI(x, y, 200, 200)
+        
+    if c == ord('b'):                           # create background image
         cv2.imwrite(bg_path, roi)
         bg_set = True
