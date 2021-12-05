@@ -65,6 +65,7 @@ while True:
             cv2.putText(frame, str(y), (rect_roi.x1 + 10, rect_roi.y1 + 30), font, 1, (0, 255, 0), 1, cv2.LINE_4)
     else:
         pass
+        # TODO: Add instructions for the user to use w,a,s,d and b
 
     cv2.imshow('Live', frame)
     
@@ -96,7 +97,7 @@ while True:
         if x > frame.shape[1] - 200:
             x -= dxy
         rect_roi = Rect_ROI(x, y, 200, 200)
-        
+
     if c == ord('b'):                           # create background image
         cv2.imwrite(bg_path, roi)
         bg_set = True
